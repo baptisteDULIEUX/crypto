@@ -6,3 +6,10 @@
 //
 
 import Foundation
+
+struct crypto {
+    var cryptoName: String
+    var cryptoImage: String
+    var cryptoValue: Int
+    var currency: String
+}

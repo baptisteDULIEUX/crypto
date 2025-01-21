@@ -1,40 +1,44 @@
-//
-//  ContentView.swift
-//  crypto
-//
-//  Created by dulieux baptiste on 14/01/2025.
-//
-
 import SwiftUI
 
 struct ContentView: View {
+    
+    @State private var isDollar: Bool = true
+    
+    @State var forecasts: [crypto] = [
+        crypto(cryptoName: "ETH", cryptoImage: "etherium", cryptoValue: 10, currency: ""),
+        crypto(cryptoName: "BIT", cryptoImage: "bitcoin", cryptoValue: 5, currency: ""),
+        crypto(cryptoName: "XLM", cryptoImage: "xlm", cryptoValue: 13, currency: ""),
+        crypto(cryptoName: "XRP", cryptoImage: "xrp", cryptoValue: 7, currency: "")
+    ]
+    
     var body: some View {
-        ZStack{
+        ZStack {
             Color.black
                 .edgesIgnoringSafeArea(.all)
-            VStack{
-                HStack(alignment: .center){
+            VStack {
+                HStack(alignment: .center) {
                     Text("Crypto App")
-                        .font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/).bold()
-                        .foregroundStyle(Color.green)
+                        .font(.title)
+                        .bold()
+                        .foregroundColor(.mint)
                     
-                    Button{
-                        print("page rafraîchie")
+                    Button {
+                        reloadPage()
                     } label: {
-                        Image(systemName:"arrow.clockwise.circle")
-                            .renderingMode(/*@START_MENU_TOKEN@*/.template/*@END_MENU_TOKEN@*/)
+                        Image(systemName: "arrow.clockwise.circle")
+                            .renderingMode(.template)
                             .resizable()
                             .frame(width: 20, height: 20)
-                            .foregroundColor(.green)
+                            .foregroundColor(.mint)
                     }
                 }
                 
-                HStack{
-                    Button{
-                        print("calendrier ouvert")
-                    } label:{
+                HStack {
+                    Button {
+                        print("Calendar opened")
+                    } label: {
                         Image(systemName: "calendar")
-                            .frame(width:30, height: 30)
+                            .frame(width: 30, height: 30)
                             .background(Color.green)
                             .foregroundColor(.black)
                             .cornerRadius(25)
@@ -42,30 +46,30 @@ struct ContentView: View {
                     
                     Text("Monday September 13, 2025")
                         .font(.title2)
-                        .foregroundStyle(Color.white)
+                        .foregroundColor(.white)
                 }
                 
                 Spacer()
                 
-                HStack{
+                HStack {
                     Spacer()
-                    cryptoValueInfo(cryptoName: "BIT", cryptoImage: "bitcoin", cryptoValue: 51)
+                    cryptoValueInfo(crypto: forecasts[0], isDollar: $isDollar)
                     Spacer()
-                    cryptoValueInfo(cryptoName: "ETH", cryptoImage: "etherium", cryptoValue: 21)
+                    cryptoValueInfo(crypto: forecasts[1], isDollar: $isDollar)
                     Spacer()
-                    cryptoValueInfo(cryptoName: "XRP", cryptoImage: "xrp", cryptoValue: 12)
+                    cryptoValueInfo(crypto: forecasts[2], isDollar: $isDollar)
                     Spacer()
-                    cryptoValueInfo(cryptoName: "XLM", cryptoImage: "xlm", cryptoValue: 6)
+                    cryptoValueInfo(crypto: forecasts[3], isDollar: $isDollar)
                     Spacer()
                 }
                 
                 Spacer()
                 
-                Button{
-                    print("Convertissage des dollars en euros effectué")
-                } label:{
-                    Text("Convert To €")
-                        .frame(width: 280, height:50)
+                Button {
+                    isDollar.toggle()
+                } label: {
+                    Text("Convert To \(isDollar ? "$" : "€")")
+                        .frame(width: 280, height: 50)
                         .background(Color.green)
                         .foregroundColor(.white)
                         .cornerRadius(12)
@@ -75,31 +79,42 @@ struct ContentView: View {
             }
         }
     }
+    
+    func reloadPage() {
+        for i in 0..<forecasts.count {
+            forecasts[i].cryptoValue += 1
+        }
+    }
 }
 
 struct cryptoValueInfo: View {
     
-    var cryptoName: String
-    var cryptoImage: String
-    var cryptoValue: Int
+    var crypto: crypto
+    @Binding var isDollar: Bool
     
     var body: some View {
-        VStack{
-            Text(cryptoName)
+        VStack {
+            Text(crypto.cryptoName)
                 .font(.title2)
-                .foregroundStyle(Color.white)
+                .foregroundColor(.white)
             
-            Image(cryptoImage)
+            Image(crypto.cryptoImage)
                 .renderingMode(.original)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 40, height: 40)
             
-            Text("$ \(cryptoValue)K")
+            Text(" \(isDollar ? "$" : "€") \(crypto.cryptoValue)K")
                 .font(.title2)
-                .foregroundStyle(Color.white)
+                .foregroundColor(.white)
         }
     }
+}
+
+struct Crypto {
+    var cryptoName: String
+    var cryptoImage: String
+    var cryptoValue: Int
 }
 
 #Preview {
